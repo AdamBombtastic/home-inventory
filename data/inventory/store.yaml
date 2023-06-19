@@ -1,0 +1,8 @@
+- Name: ZipFizz
+  ID: 3
+  Stock: 60
+  LastStocked: '2020-06-17'
+- Name: Chips
+  ID: 4
+  Stock: 1
+  LastStocked: '2020-06-17'

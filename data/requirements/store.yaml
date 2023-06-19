@@ -1,0 +1,54 @@
+- Name: Paper Towels In Stock
+  ID: 0
+  Quantity: 1
+  Units: Pack of Rolls (6)
+  ApplicableItems:
+    - Paper Towels
+- Name: Toilet Paper In Stock
+  ID: 1
+  Quantity: 1
+  Units: Pack of Rolls (6)
+  ApplicableItems:
+    - Toilet Paper
+- Name: Kleenex In Stock
+  ID: 2
+  Quantity: 6
+  Units: Box
+  ApplicableItems:
+    - Kleenex
+- Name: ZipFizz in Stock
+  ID: 3
+  Quantity: 30
+  Units: Tube
+  ApplicableItems:
+    - ZipFizz
+- Name: Coffee in Stock
+  ID: 4
+  Quantity: 1
+  Units: Bag
+  ApplicableItems:
+    - Coffee Grounds
+- Name: Snacks In Stock
+  ID: 5
+  Quantity: 5
+  Units: Snack
+  MaxShelfTime: 90 # days
+  ApplicableItems:
+    - Snacks
+    - Chips
+    - Cookies
+    - Crackers
+    - Granola Bars
+    - Fruit Snacks
+    - Nuts
+    - Pretzels
+    - Peanut Butter Filled Pretzels
+- Name: Bread (Frozen) in Stock
+  ID: 6
+  Quantity: 2
+  Units: Loaf
+  MaxShelfTime: 60 # days
+  ApplicableItems:
+    - Bread (Frozen)
+    - Sour Dough Bread (Frozen)
+    - Potato Bread (Frozen)

@@ -1,0 +1,28 @@
+- Name: Paper Towels
+  ID: 0
+  Quantity: 1
+  Units: Pack of Rolls (6)
+- Name: Toilet Paper
+  ID: 1
+  Quantity: 1
+  Units: Pack of Rolls (6)
+- Name: Kleenex
+  ID: 2
+  Quantity: 1
+  Units: Box
+- Name: ZipFizz
+  ID: 3
+  Quantity: 30
+  Units: Tube
+- Name: Coffee Grounds 
+  ID: 4
+  Quantity: 1
+  Units: Bag
+- Name: Snacks 
+  ID: 5
+  Quantity: 5
+  Units: Box
+- Name: Bread
+  ID: 6
+  Quantity: 2
+  Units: Loaf
