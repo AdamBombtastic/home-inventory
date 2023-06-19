@@ -4,19 +4,18 @@ import (
 	"testing"
 	"time"
 
-	"github.com/adambombtastic/home-inventory/pkg/inventory"
-	"github.com/adambombtastic/home-inventory/pkg/requirements"
+	"github.com/adambombtastic/home-inventory/pkg/core/entities"
 )
 
 func Test_InventoryMeetsRequirements(t *testing.T) {
 	today := time.Now()
 	yearAgo := today.AddDate(-1, 0, 0)
-	inventory := []*inventory.Item{
+	inventory := []*entities.Item{
 		{Name: "Snacks", Stock: 5, LastRestock: yearAgo, ID: 0},
 		{Name: "Toilet Paper", Stock: 0, LastRestock: yearAgo, ID: 1},
 		{Name: "Paper Towels", Stock: 10, LastRestock: yearAgo, ID: 2},
 	}
-	reqs := []*requirements.Requirement{
+	reqs := []*entities.Requirement{
 		{Name: "Snacks", Quantity: 5, Units: "bags", MaxShelfTime: 90, ID: 0, ApplicableItems: []string{"Snacks"}},
 		{Name: "Toilet Paper", Quantity: 1, Units: "rolls", ID: 1, ApplicableItems: []string{"Toilet Paper"}},
 		{Name: "Paper Towels", Quantity: 5, Units: "rolls", ID: 2, ApplicableItems: []string{"Paper Towels"}},
@@ -29,8 +28,8 @@ func Test_InventoryMeetsRequirements(t *testing.T) {
 	if len(missing[0].Reasons) != 3 {
 		t.Error("Expected 3, got", len(missing[0].Reasons))
 	}
-	if missing[0].Reasons[0].Reason != requirements.ReasonExpired {
-		t.Error("Expected", requirements.ReasonExpired, "got", missing[0].Reasons[0])
+	if missing[0].Reasons[0].Reason != entities.ReasonExpired {
+		t.Error("Expected", entities.ReasonExpired, "got", missing[0].Reasons[0])
 	}
 }
 
@@ -41,32 +40,32 @@ func Test_itemMeetsRequirement(t *testing.T) {
 
 	type testcase struct {
 		name       string
-		item       *inventory.Item
-		req        *requirements.Requirement
+		item       *entities.Item
+		req        *entities.Requirement
 		want       bool
-		wantReason requirements.Reason
+		wantReason entities.Reason
 	}
 	testcases := []testcase{
 		{
 			name:       "Snacks -- Expired",
-			item:       &inventory.Item{Name: "Snacks", Stock: 5, LastRestock: yearAgo},
-			req:        &requirements.Requirement{Name: "Snacks", Quantity: 5, Units: "bags", MaxShelfTime: 90, ApplicableItems: []string{"Snacks"}},
+			item:       &entities.Item{Name: "Snacks", Stock: 5, LastRestock: yearAgo},
+			req:        &entities.Requirement{Name: "Snacks", Quantity: 5, Units: "bags", MaxShelfTime: 90, ApplicableItems: []string{"Snacks"}},
 			want:       false,
-			wantReason: requirements.ReasonExpired,
+			wantReason: entities.ReasonExpired,
 		},
 		{
 			name:       "Snacks -- Happy",
-			item:       &inventory.Item{Name: "Snacks", Stock: 5, LastRestock: today},
-			req:        &requirements.Requirement{Name: "Snacks", Quantity: 5, Units: "bags", MaxShelfTime: 90, ApplicableItems: []string{"Snacks"}},
+			item:       &entities.Item{Name: "Snacks", Stock: 5, LastRestock: today},
+			req:        &entities.Requirement{Name: "Snacks", Quantity: 5, Units: "bags", MaxShelfTime: 90, ApplicableItems: []string{"Snacks"}},
 			want:       true,
-			wantReason: requirements.ReasonNone,
+			wantReason: entities.ReasonNone,
 		},
 		{
 			name:       "Incompatible Units",
-			item:       &inventory.Item{Name: "Snacks", Stock: 5, LastRestock: yearAgo},
-			req:        &requirements.Requirement{Name: "Toilet Paper", Quantity: 5, Units: "rolls", ApplicableItems: []string{"Toilet Paper", "Paper Towels"}},
+			item:       &entities.Item{Name: "Snacks", Stock: 5, LastRestock: yearAgo},
+			req:        &entities.Requirement{Name: "Toilet Paper", Quantity: 5, Units: "rolls", ApplicableItems: []string{"Toilet Paper", "Paper Towels"}},
 			want:       false,
-			wantReason: requirements.ReasonNotApplicable,
+			wantReason: entities.ReasonNotApplicable,
 		},
 	}
 
@@ -87,11 +86,11 @@ func Test_itemMeetsRequirement(t *testing.T) {
 func Test_ItemsMeetRequirement(t *testing.T) {
 	today := time.Now()
 
-	items := []*inventory.Item{
+	items := []*entities.Item{
 		{Name: "Snacks", Stock: 5, LastRestock: today},
 		{Name: "Chips", Stock: 5, LastRestock: today},
 	}
-	req := &requirements.Requirement{Name: "Snacks", Quantity: 8, Units: "bags", MaxShelfTime: 90, ApplicableItems: []string{"Snacks", "Chips"}}
+	req := &entities.Requirement{Name: "Snacks", Quantity: 8, Units: "bags", MaxShelfTime: 90, ApplicableItems: []string{"Snacks", "Chips"}}
 
 	got, gotReason := ItemsMeetRequirement(req, items)
 	if got != true {

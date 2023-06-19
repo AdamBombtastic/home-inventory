@@ -3,8 +3,7 @@ package interactors
 import (
 	"time"
 
-	"github.com/adambombtastic/home-inventory/pkg/inventory"
-	"github.com/adambombtastic/home-inventory/pkg/requirements"
+	"github.com/adambombtastic/home-inventory/pkg/core/entities"
 )
 
 /*
@@ -15,18 +14,18 @@ import (
 // RequirementWithReasons is a struct that contains a requirement and the reasons why it failed to meet the requirement
 // Need to add a reference to the item that failed to meet the requirement so that we can display the item in the UI.
 type RequirementWithReasons struct {
-	Requirement *requirements.Requirement
+	Requirement *entities.Requirement
 	Reasons     []*CheckInfo
 }
 type CheckInfo struct {
-	Item   *inventory.Item
-	Reason requirements.Reason
+	Item   *entities.Item
+	Reason entities.Reason
 }
 
 // InventoryMeetsRequirements is a function that checks the inventory against the requirements
 // In the event that the inventory is missing items, it returns a list of requirements that are missing with the reasons why each
 // item failed to meet the requirement
-func InventoryMeetsRequirements(inventory []*inventory.Item, reqs []*requirements.Requirement) []*RequirementWithReasons {
+func InventoryMeetsRequirements(inventory []*entities.Item, reqs []*entities.Requirement) []*RequirementWithReasons {
 	// map of requirement ID to whether or not it's met
 	runMap := make(map[int][]*CheckInfo)
 	metMap := make(map[int]bool)
@@ -47,7 +46,7 @@ func InventoryMeetsRequirements(inventory []*inventory.Item, reqs []*requirement
 }
 
 // ItemsMeetsRequirement is a function that checks a list of items against a requirement, returning whether or not the items meet the requirement
-func ItemsMeetRequirement(req *requirements.Requirement, items []*inventory.Item) (bool, []*CheckInfo) {
+func ItemsMeetRequirement(req *entities.Requirement, items []*entities.Item) (bool, []*CheckInfo) {
 	reasons := []*CheckInfo{}
 
 	// No requirement, no problem
@@ -71,10 +70,10 @@ func ItemsMeetRequirement(req *requirements.Requirement, items []*inventory.Item
 }
 
 // itemMeetsRequirement is a function that checks a single item against a requirement, returning whether or not the item meets the requirement
-func itemMeetsRequirement(req *requirements.Requirement, item *inventory.Item) (bool, requirements.Reason) {
+func itemMeetsRequirement(req *entities.Requirement, item *entities.Item) (bool, entities.Reason) {
 	// No requirement, no problem
 	if req == nil {
-		return true, requirements.ReasonNone
+		return true, entities.ReasonNone
 	}
 
 	// Doesn't apply to this item, so the requirement is not met
@@ -86,15 +85,15 @@ func itemMeetsRequirement(req *requirements.Requirement, item *inventory.Item) (
 		}
 	}
 	if !applies {
-		return false, requirements.ReasonNotApplicable
+		return false, entities.ReasonNotApplicable
 	}
 
 	// If the item is expired, it's not good
 	if req.MaxShelfTime > 0 {
 		minDate := time.Now().AddDate(0, 0, -req.MaxShelfTime)
 		if item.LastRestock.Before(minDate) {
-			return false, requirements.ReasonExpired
+			return false, entities.ReasonExpired
 		}
 	}
-	return true, requirements.ReasonNone
+	return true, entities.ReasonNone
 }

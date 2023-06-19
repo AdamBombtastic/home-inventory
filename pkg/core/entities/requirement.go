@@ -1,4 +1,4 @@
-package requirements
+package entities
 
 type Requirement struct {
 	ID              int      `yaml:"ID"`

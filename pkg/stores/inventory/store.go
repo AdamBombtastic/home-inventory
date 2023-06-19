@@ -1,20 +1,21 @@
-package requirements
+package inventory
 
 import (
 	"fmt"
 	"os"
 
+	"github.com/adambombtastic/home-inventory/pkg/core/entities"
 	"gopkg.in/yaml.v2"
 )
 
 type Store interface {
-	All() ([]*Requirement, error)
+	All() ([]*entities.Item, error)
 	// Add(r *Requirement) error
 	// Remove(id int) error
 }
 
 type yamlStore struct {
-	items        []*Requirement
+	items        []*entities.Item
 	fileLocation string
 }
 
@@ -26,9 +27,9 @@ func (y *yamlStore) load() error {
 	return yaml.Unmarshal(inData, &y.items)
 }
 
-func NewStore() (Store, error) {
+func New() (Store, error) {
 	// This should be configurable
-	fileLocation := `C:\Users\adama\Documents\Github\home-inventory\data\requirements\store.yaml`
+	fileLocation := `C:\Users\adama\Documents\Github\home-inventory\data\inventory\store.yaml`
 	y := &yamlStore{fileLocation: fileLocation}
 	err := y.load()
 	if err != nil {
@@ -37,6 +38,6 @@ func NewStore() (Store, error) {
 	return y, nil
 }
 
-func (y *yamlStore) All() ([]*Requirement, error) {
+func (y *yamlStore) All() ([]*entities.Item, error) {
 	return y.items, nil
 }

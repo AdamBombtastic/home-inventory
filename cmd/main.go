@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
 
-	"github.com/adambombtastic/home-inventory/pkg/interactors"
-	"github.com/adambombtastic/home-inventory/pkg/inventory"
-	"github.com/adambombtastic/home-inventory/pkg/requirements"
+	"github.com/adambombtastic/home-inventory/pkg/core"
+	"github.com/adambombtastic/home-inventory/pkg/stores/inventory"
+	"github.com/adambombtastic/home-inventory/pkg/stores/requirements"
 )
 
 // First use case is to be able to answer the "requirements" of a "household".
@@ -18,27 +18,30 @@ import (
 // Requirements can be satisfied by multiple items.
 // Items can satisfy multiple requirements.
 func main() {
-	reqStore, err := requirements.NewStore()
+
+	reqService, err := requirements.New()
 	if err != nil {
 		panic(err)
 	}
-	reqs, err := reqStore.All()
+
+	inventoryService, err := inventory.New()
 	if err != nil {
 		panic(err)
 	}
+
+	app := core.NewApplication(reqService, inventoryService)
+
+	// must
+	reqs, _ := app.GetRequirements()
+
+	// must
+	items, _ := app.GetInventory()
+
 	println("Requirements")
 	println("------------------------------------------------------------")
 	fmt.Printf("| %-20s | %-10s | %-20s |\n", "Name", "Quanity", "Units")
 	for _, req := range reqs {
 		fmt.Printf("| %-20s | %-10d | %-20s |\n", req.Name, req.Quantity, req.Units)
-	}
-	inv, err := inventory.NewStore()
-	if err != nil {
-		panic(err)
-	}
-	items, err := inv.All()
-	if err != nil {
-		panic(err)
 	}
 	println("Inventory")
 	println("------------------------------------------------------------")
@@ -48,7 +51,10 @@ func main() {
 	}
 
 	println("Checking Inventory")
-	failures := interactors.InventoryMeetsRequirements(items, reqs)
+	failures, err := app.InventoryMeetsRequirements()
+	if err != nil {
+		panic(err)
+	}
 	for _, failure := range failures {
 		println("------------------------------------------------------------")
 		fmt.Printf("Requirement: %s\n", failure.Requirement.Name)
